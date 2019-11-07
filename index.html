@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Slack View</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"> .
+    </script>
+    <script>
+      function refreshIFrame() {
+        var x = document.getElementById("slackview");
+        x.contentWindow.location.reload();
+        var t = setTimeout(refreshIFrame, 60000);
+      }
+    </script>
+  </head>
+  <body onload="refreshIFrame()">
+    <iframe id="slackview" 
+            style="position: absolute; height: 100%; width: 100%; border: none"
+            src="slackview.php?order=des">
+    </iframe>
+  </body>
+</html>
