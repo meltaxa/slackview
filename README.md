@@ -9,7 +9,7 @@ The Slack View is not interactive. It is a read-only view of the target Slack ch
 A custom implementation of Slack View that live streams a #bad-actors Slack channel of hackers probing and attempting to infiltrate a system.
 <p align="center"> 
 <img src="https://mellican.com/badactors/images/badactors-example.png"/><br/>
-An example of the Bad Actors Slack channel can be viewed in real time here: https://mellican.com/bad-actors
+An example of the Bad Actors Slack channel can be viewed in real time here: https://mellican.com/badactors
  </p>
 
 ## Pre-requisites
