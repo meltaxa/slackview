@@ -85,7 +85,7 @@ function get_channel_history($channelId,$history_count)
     $fetch_from_ts = time();
 
     while ($has_more && count($channel_history) < $history_count) {
-        $h = slack_api_request('channels.history', [
+        $h = slack_api_request('conversations.history', [
             'channel' => $channelId,
             'count' => 1,
             'latest' => $fetch_from_ts,
@@ -168,10 +168,9 @@ function get_all_users()
 }
 
 function get_channel_by_name($channel_name) {
-    $all_channels = slack_api_request('channels.list', [
+    $all_channels = slack_api_request('conversations.list', [
         'limit' => 500,
-        'exclude_archived' => true,
-        'exclude_members' => true
+        'exclude_archived' => true
     ]);
 
     foreach ($all_channels['channels'] as $channel) {
