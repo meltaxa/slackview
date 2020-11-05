@@ -58,6 +58,12 @@ $cacheDirectory = sys_get_temp_dir();
 
 1. Copy the OAuth Access Token and update it in the config.php file.
 
+#### Add SlackView to the channel
+
+1. The SlackView "bot" app needs to join the channel by issuing the invite command from the channel:
+
+   ```/invite @SlackView```
+
 # Using Slack View
 
 Visit your web page, either the index.html which demonstrates embedding the Slack channel as an IFrame and allows
