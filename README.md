@@ -6,11 +6,12 @@ The Slack View is not interactive. It is a read-only view of the target Slack ch
 
 # Demo
 
-A custom implementation of Slack View that live streams a #bad-actors Slack channel of hackers probing and attempting to infiltrate a system.
+This is a live Slack View example of the Bad Actors Slack channel from https://mellican.com/badactors:
+
 <p align="center"> 
-<img src="https://mellican.com/badactors/images/badactors-example.png"/><br/>
-An example of the Bad Actors Slack channel can be viewed in real time here: https://mellican.com/badactors
- </p>
+<img src="https://mellican.com/images/badactors.png?github=slackview" width=400px><br>
+These bad actors aren't from Hollywood.
+</p>
 
 ## Pre-requisites
 
@@ -19,6 +20,13 @@ An example of the Bad Actors Slack channel can be viewed in real time here: http
 ## Installation
 
 Copy the contents of this repository to your php web root folder.
+
+### Using Docker
+
+1. Create a [config.php] with the API token and channel. See Configuration section below.
+
+2. Run the Docker image with the volume switch:
+   * `docker run -p 8000:80 -v <localpath>:/var/www/html meltaxa/slackview`
 
 ## Configuration
 
