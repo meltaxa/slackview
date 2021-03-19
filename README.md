@@ -9,7 +9,7 @@ The Slack View is not interactive. It is a read-only view of the target Slack ch
 This is a live Slack View example of the Bad Actors Slack channel from https://mellican.com/badactors:
 
 <p align="center"> 
-<img src="https://mellican.com/images/badactors.png?github=slackview" width=400px><br>
+<img src="https://mellican.com/images/badactors.png?github=slackview" width=70%><br>
 These bad actors aren't from Hollywood.
 </p>
 
@@ -23,7 +23,7 @@ Copy the contents of this repository to your php web root folder.
 
 ### Using Docker
 
-1. Create a [config.php] with the API token and channel. See Configuration section below.
+1. Create a [config.php](https://github.com/meltaxa/slackview/blob/master/config.php) with the API token and channel. See Configuration section below.
 
 2. Run the Docker image with the volume switch:
    * `docker run -p 8000:80 -v <localpath>:/var/www/html meltaxa/slackview`
