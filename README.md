@@ -26,7 +26,7 @@ Copy the contents of this repository to your php web root folder.
 1. Create a [config.php](https://github.com/meltaxa/slackview/blob/master/config.php) with the API token and channel. See Configuration section below.
 
 2. Run the Docker image with the volume switch:
-   * `docker run -p 8000:80 -v <localpath>:/var/www/html meltaxa/slackview`
+   * `docker run -p 8000:80 -v <path/to/config>:/config meltaxa/slackview`
 
 ## Configuration
 
