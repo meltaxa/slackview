@@ -399,7 +399,7 @@ def watch_disconnect(data):
     logger.info('Client disconnected')
 
 if __name__ == '__main__':
-    logger.info("Slackviewer is ready")
+    logger.info("Slack View is ready.")
     all_emojis = get_all_emojis()
     user_list = get_all_users()
     socketio.run(app, host='0.0.0.0', port=7000)
