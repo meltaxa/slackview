@@ -1,8 +1,6 @@
 # Slack View
 
-View a Slack channel in a web page.
-
-The Slack View is not interactive. It is a read-only view of the target Slack channel leveraging the Slack API.
+View in real time a Slack channel in a web page.
 
 # Demo
 
@@ -14,34 +12,20 @@ An example of the Bad Actors Slack channel can be viewed in real time here: http
 
 ## Pre-requisites
 
-* A PHP server
+* Python 3
 
 ## Installation
 
-Copy the contents of this repository to your php web root folder.
+```
+git clone https://github.com/meltaxa/slackview.git
+cd slackview
+pip3 install -r requirements.txt
+cp config.yml-example config.yml
+```
 
 ## Configuration
 
-### Update config.php 
-
-* Change the timezone.
-* Update the slackApiToken with the OAuth token (see below for details).
-* Update slackChannelName in the config.php file with the Slack Channel Name you want published.
-* Optional: Update the slackHistoryCount in the config.php file with how many messages to display.
-
-config.php extract:
-```php
-$timezone = 'Australia/Brisbane';
-
-$slackApiToken = 'TOKEN';
-$slackChannelName = 'CHANNEL';
-
-$slackHistoryCount = '50';
-
-$cacheDirectory = sys_get_temp_dir();
-```
-
-#### To obtain a Slack API token:
+#### To obtain a Slack API and BOT token:
 1. Visit https://api.slack.com/apps
 1. Click "Create New App"
 1. Call the App "SlackView"
@@ -52,11 +36,15 @@ $cacheDirectory = sys_get_temp_dir();
    * users:read
    * emoji:read
 
+1. Under App Level Tokens > Generate Token and Scopes > add a token name and the connections.write scope.
+1. Click "Generate"
+1. Copy App Token value and update it in the config.yml file.
+
 1. Click Install App to Workspace
 
    Accept permissions by clicking "Allow" button.
 
-1. Copy the OAuth Access Token and update it in the config.php file.
+1. Copy the Bot User OAUTH Token value and update it in the config.yml file.
 
 #### Add SlackView to the channel
 
@@ -66,14 +54,24 @@ $cacheDirectory = sys_get_temp_dir();
 
 # Using Slack View
 
-Visit your web page, either the index.html which demonstrates embedding the Slack channel as an IFrame and allows
-the view to be refreshed automatically. 
+1. Start Slack View from command line:
+```python3 ./app.py```
 
-Alternatively, the view can be called direct via the slackview.php page. This does not automatically refresh. Use a
-method such as [livereload](https://github.com/livereload/livereload-js) to trigger updates.
+1. Visit the Slack View web site on port 7000: http://<IP address>:7000.
 
-By default the order of messages is in descending time order (oldest to latest). It can be set using the parameter order=asc|des (ascending or descending). For example, ```slackview.php?order=asc``` to order messages from latest to oldest.
+# Docker version
 
-# Acknowledgements
+1. Create a config directory which will be mounted as a volume for Docker.
 
-Forked from [hjnilsson's slack-web-viewer](https://github.com/hjnilsson/slack-web-viewer) project.
+1. Place your config.yml in the config directory.
+
+1. Run the Docker image with the volume switch to mount your config directory as /config in the image. For example:
+```docker run -v /path/to/config_dir:/config -p 7000:7000 -e TZ=Australia/Brisbane meltaxa/slackview```
+Note, by default the Docker container will be set in UTC timezone. Set the timezone using the ```-e TZ=...``` option.
+
+1. The Slack View app will be running on: http://<IP address>:7000
+
+# PHP version
+
+Slack View was originally written in PHP which only provided a snapshot of the channel and a page refresh is required to display
+the latest messages. For posterity, the php version of Slack View is available under the [php branch](https://github.com/meltaxa/slackview/tree/php).
