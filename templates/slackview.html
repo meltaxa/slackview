@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="shortcut icon" href="/static/images/favicon.ico">
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.3/socket.io.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            //connect to the socket server.
+            var socket = io.connect('http://' + document.domain + ':' + location.port + '/watch');
+
+            var currentLocation = window.location;
+            var channel = currentLocation['pathname'].replace('/slackview/','')
+            document.title = channel;
+            socket.emit('join', { 'channel': channel });
+
+            var posts_received = [];
+
+            //receive details from server
+            socket.on('newmessage', function(msg) {
+                posts_received.push(msg.text);
+                posts_string = '';
+                for (var i = 0; i < posts_received.length; i++){
+                    posts_string = posts_string + posts_received[i];
+                }
+                $('#log').html(posts_string);
+        
+                // Load page from the bottom
+                window.scrollTo(0,document.body.scrollHeight);
+                setTimeout(function() {
+                    // Allow images to load
+                    window.scrollTo(0,document.body.scrollHeight);
+                }, 300);
+            });
+
+        });
+    </script>
+    <link href="/static/css/style.css" rel="stylesheet"/>
+    {% if theme is not none %} 
+    <link href="/static/css/{{ theme }}.css" rel="stylesheet"/>
+    {% endif %}
+</head>
+<body>
+<div class="container">
+<div id="log">
+</div> <!-- /#log -->
+</div>
+<div id="footer">
+</div> <!-- /#footer -->
+</body>
+</html>

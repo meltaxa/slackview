@@ -1,0 +1,38 @@
+html {
+    color: #fff;
+    background: #000;
+}
+
+body {
+    color: #fff;
+    background: #000;
+}
+
+.slack-message {
+    color: #fff;
+    background: #000;
+}
+
+.slack-message .timestamp {
+    color: #888;
+}
+
+.slack-message .message {
+    color: #fff;
+}
+
+.reaction {
+    color: #ccc;
+}
+
+.slack-message .document {
+    background-color: #000;
+}
+
+a {
+    color: #08c;
+}
+
+a:visited {
+    color: #0576b9;
+}

@@ -1,0 +1,15 @@
+# Update these values with your Slack tokens:
+slack_app_token: xapp-XXXX
+slack_bot_token: xoxb-XXXX
+
+# Console log level: DEBUG, INFO, WARN or ERROR
+#loglevel: INFO
+
+# If the channel_default is set, the index page will redirect to this channel page.
+#channel_default: general
+
+# How many messages to retrieve on page load.
+#history_limit: 50
+
+# Choose a themed stylesheet that is available under the static/css directory.
+#theme: dark

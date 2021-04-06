@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="/static/css/style.css" rel="stylesheet"/>
+    {% if theme is not none %} 
+    <link href="/static/css/{{ theme }}.css" rel="stylesheet"/>
+    {% endif %}
+    <title>Slack View</title>
+</head>
+<body>
+<div class="container">
+<h1>Slack View</h1>
+<h2>Select a Slack channel to view:</h2>
+<ul>
+{% for channel in channels %}
+    <li><a href="/slackview/{{ channel.name }}">{{ channel.name }}</a></li>
+{% endfor %}
+</ul>
+</div>
+<div id="footer">
+</div> <!-- /#footer -->
+</body>
+</html>
