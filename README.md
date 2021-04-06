@@ -6,11 +6,12 @@ Slack View is a web app that can show mutliple Slack channels as separate Slack 
 
 # Demo
 
-A custom implementation of Slack View that live streams a #bad-actors Slack channel of hackers probing and attempting to infiltrate a system.
+This is a live Slack View example of the Bad Actors Slack channel from https://mellican.com/badactors:
+
 <p align="center"> 
-<img src="https://mellican.com/badactors/images/badactors-example.png"/><br/>
-An example of the Bad Actors Slack channel can be viewed in real time here: https://mellican.com/badactors
- </p>
+<img src="https://mellican.com/images/badactors.png?github=slackview" width=70%><br>
+These bad actors aren't from Hollywood.
+</p>
 
 ## Pre-requisites
 
