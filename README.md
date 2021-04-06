@@ -1,3 +1,6 @@
+| :exclamation:  This is the PHP version of Slack View. See the latest Python version on the [master branch](https://github.com/meltaxa/slackview/) for real time Slack View streaming  |
+|-----------------------------------------|
+
 # Slack View
 
 View a Slack channel in a web page.
