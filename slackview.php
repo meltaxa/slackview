@@ -88,7 +88,7 @@ function get_channel_history($channelId,$history_count)
 
     while ($has_more && count($channel_history) < $history_count) {
         $h = slack_api_request('conversations.history', [
-            'channel' => $channelId,
+            'channel' => $slackChannelName,
             'count' => 1,
             'latest' => $fetch_from_ts,
         ]);
