@@ -28,6 +28,11 @@ cp config.yml-example config.yml
 
 ## Configuration
 
+Update the config.yml file is the slack_app_token and slack_bot_token values.
+
+Further configuration and customization is available inside the config.yml file. Instructions
+are provided within.
+
 #### To obtain a Slack API and BOT token:
 1. Visit https://api.slack.com/apps
 1. Click "Create New App"
@@ -61,7 +66,7 @@ cp config.yml-example config.yml
 
     ```python3 ./app.py```
 
-1. Visit the Slack View web site on port 7000: http://\<ip address\>:7000.
+1. The console output will display the Slack View URL to use.
 
 # Docker version
 

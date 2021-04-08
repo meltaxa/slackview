@@ -7,7 +7,7 @@
     <script>
         $(document).ready(function(){
             //connect to the socket server.
-            var socket = io.connect('http://' + document.domain + ':' + location.port + '/watch');
+            var socket = io.connect("{{ web_address }}/watch");
 
             var currentLocation = window.location;
             var channel = currentLocation['pathname'].replace('/slackview/','')

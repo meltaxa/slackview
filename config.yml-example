@@ -2,6 +2,21 @@
 slack_app_token: xapp-XXXX
 slack_bot_token: xoxb-XXXX
 
+# OPTIONAL configuration is below this line. Default or example values are shown in the commented out fields.
+
+# Run the app on host:port.
+#host: localhost
+#port: 5000
+
+# Enable SSL by defining the cert and key paths.
+#certfile: certfile.pem
+#keyfile: keyfile.key
+
+# Use a web address when serving Slack View behind a reverse proxy.
+# This address is used by the javascript client to connect to the websocket.
+# To setup a reverse proxy in nginx, see the nginx-slackview.conf-example file.
+#web_address: http://slackview.yourdomain.com
+
 # Console log level: DEBUG, INFO, WARN or ERROR
 #loglevel: INFO
 
@@ -9,7 +24,7 @@ slack_bot_token: xoxb-XXXX
 #channel_default: general
 
 # How many messages to retrieve on page load.
-#history_limit: 50
+#history_limit: 25
 
 # Choose a themed stylesheet that is available under the static/css directory.
 #theme: dark

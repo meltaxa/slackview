@@ -20,6 +20,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from gevent import monkey
+monkey.patch_all()
+
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from flask import Flask, render_template, url_for, copy_current_request_context, redirect
 from threading import Thread, Event
@@ -36,6 +39,7 @@ import json
 import os
 from pathlib import Path
 import re
+import socket
 import sys
 import threading
 import time
@@ -110,23 +114,50 @@ def terminate(message):
     logging.error(message)
     sys.exit()
 
-def pre_flight_check():
-  if not in_config("slack_bot_token"):
-      terminate("[ERROR] slack_bot_token not defined in config.yml file.")
+def preflight_check():
+  global host_ip
+  global protocol
 
-  if not in_config("slack_app_token"):
-      terminate("[ERROR] slack_bot_token not defined in config.yml file.")
+  if not in_config('slack_bot_token'):
+      terminate('[ERROR] slack_bot_token not defined in config.yml file.')
 
-  if not in_config("history_limit"):
-      logger.info("history_limit not defined, defaulting to 50.")
-      config["history_limit"] = 50
+  if not in_config('slack_app_token'):
+      terminate('[ERROR] slack_bot_token not defined in config.yml file.')
 
-  if not in_config("theme"):
-      logger.info("theme not defined, defaulting to 'styles'.")
-      config["theme"] = "styles"
-  config["theme"] = config["theme"].replace("\.css$",'')
+  if not in_config('history_limit'):
+      config['history_limit'] = 25
 
-pre_flight_check()
+  if not in_config('theme'):
+      config['theme'] = 'styles'
+  config['theme'] = config['theme'].replace("\.css$",'')
+
+  if not in_config('host'):
+      config['host'] = 'localhost'
+  if config['host'] == '0.0.0.0':
+      s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+      s.connect(("1.1.1.1", 80))
+      host_ip = s.getsockname()[0]
+  else:
+      host_ip = config['host']
+
+  if not in_config('port'):
+      config['port'] = 5000
+
+  if in_config('certfile'):
+      if not os.path.isfile(config['certfile']):
+          terminate("[ERROR] certfile %s does not exist." % config['certfile'])
+
+  if in_config('keyfile'):
+      if not os.path.isfile(config['keyfile']):
+          terminate("[ERROR] keyfile %s does not exist." % config['keyfile'])
+      protocol = 'https'
+  else:
+      protocol = 'http'
+
+  if not in_config('web_address'):
+      config['web_address'] = "%s://%s:%s" % (protocol,host_ip,config['port'])
+
+preflight_check()
 
 global all_emojis
 global user_list
@@ -149,7 +180,7 @@ def get_channel_by_id(slackChannelId):
     try:
         result = webClient.conversations_list()
         for channel in result['channels']:
-            if channel["id"] == slackChannelId:
+            if channel['id'] == slackChannelId:
                 return channel
     except SlackApiError as e:
         logger.error("Error fetching channels: {}".format(e))
@@ -158,7 +189,7 @@ def get_channel_by_name(slackChannelName):
     try:
         result = webClient.conversations_list()
         for channel in result['channels']:
-            if channel["name"] == slackChannelName:
+            if channel['name'] == slackChannelName:
                 return channel
     except SlackApiError as e:
         logger.error("Error fetching channels: {}".format(e))
@@ -167,11 +198,11 @@ def get_channel_history(channel_id, history_count):
     conversation_history = []
     try:
         result = webClient.conversations_history(channel=channel_id,limit=history_count)
-        conversation_history = list(reversed(result["messages"]))
+        conversation_history = list(reversed(result['messages']))
     except SlackApiError as e:
         logger.error("Error creating conversation: {}".format(e))
     
-    message_cache_file = ".channel-cache.tmp.json"
+    message_cache_file = '.channel-cache.tmp.json'
     try:
         with open(message_cache_file, 'w') as f:
             json.dump(conversation_history, f, indent=4, sort_keys=True)
@@ -182,19 +213,19 @@ def get_channel_history(channel_id, history_count):
 
 def render_message(message):
     logger.debug("Message to render: %s" % message)
-    if message["type"] == "message" \
-        and message.get("subtype") is None:
+    if message['type'] == 'message' \
+        and message.get('subtype') is None:
          payload = render_user_message(message)
          socketio.emit('newmessage', {'text': payload}, namespace='/watch', room=room)
 
     # Process bot messages
-    if message["type"] == "message" \
-        and message.get("subtype") == "bot_message":
+    if message['type'] == 'message' \
+        and message.get('subtype') == 'bot_message':
          payload = render_bot_message(message)
          socketio.emit('newmessage', {'text': payload}, namespace='/watch', room=room)
 
 def get_all_users():
-    users_cache_file = ".users-cache.tmp.json"
+    users_cache_file = '.users-cache.tmp.json'
     try:
         with open(users_cache_file) as f:
             data = json.load(f)
@@ -221,15 +252,15 @@ def get_all_users():
 
 def user_id_to_name(userId):
     user = user_list[userId];
-    if "real_name" in user:
+    if 'real_name' in user:
         return user['real_name']
-    if "name" in user:
+    if 'name' in user:
         return user['name']
     return 'Unknown';
 
 def get_all_emojis():
-    emoji_cache_file = ".emoji-cache.tmp.json"
-    emojis_json = "emojis.json"
+    emoji_cache_file = '.emoji-cache.tmp.json'
+    emojis_json = 'emojis.json'
     try:
         with open(emoji_cache_file) as f:
             data = json.load(f)
@@ -250,8 +281,8 @@ def get_all_emojis():
     except Exception as e:
         logger.error("Could not read emojis.json: %s" % e)
     for emoji in standard_emojis:
-        as_html = "&#x" + emoji["unified"].replace('-',';&#x') + ";"
-        all_emojis[emoji["short_name"]] = as_html                
+        as_html = '&#x' + emoji['unified'].replace('-',';&#x') + ';'
+        all_emojis[emoji['short_name']] = as_html                
 
     try:
         with open(emoji_cache_file, 'w') as f:
@@ -302,10 +333,10 @@ def render_user_message(message):
 def render_bot_message(message):
     html = '<div class="slack-message">'
     try:
-        if "emoji" in message['icons']:
+        if 'emoji' in message['icons']:
             icon = message['icons']['emoji']
             html += render_icon(icon)
-        elif "image_64" in message["icons"]:
+        elif 'image_64' in message['icons']:
             message['icons']['image_64']
             html += '<img class="avatar" src="' + message['icons']['image_64'] + '" aria-hidden="true" title="">'
     except Exception as e:
@@ -326,34 +357,32 @@ def render_bot_message(message):
     return html
 
 def process(client: SocketModeClient, req: SocketModeRequest):
-    if req.type == "events_api":
+    if req.type == 'events_api':
         logger.debug("Event detected: %s" % req.payload["event"])
         # Acknowledge the request anyway
         response = SocketModeResponse(envelope_id=req.envelope_id)
         socketClient.send_socket_mode_response(response)
 
         # Process user messages
-        if req.payload["event"]["type"] == "message" \
-            and req.payload["event"].get("subtype") is None:
-             payload = render_user_message(req.payload["event"])
-             room_name = get_channel_by_id(req.payload["event"].get("channel"))
+        if req.payload['event']['type'] == 'message' \
+            and req.payload['event'].get('subtype') is None:
+             payload = render_user_message(req.payload['event'])
+             room_name = get_channel_by_id(req.payload['event'].get('channel'))
              socketio.emit('newmessage', {'text': payload}, namespace='/watch', room=room_name['name'])
 
         # Process bot messages
-        if req.payload["event"]["type"] == "message" \
-            and req.payload["event"].get("subtype") == "bot_message":
-             payload = render_bot_message(req.payload["event"])
-             room_name = get_channel_by_id(req.payload["event"].get("channel"))
+        if req.payload['event']['type'] == 'message' \
+            and req.payload['event'].get('subtype') == 'bot_message':
+             payload = render_bot_message(req.payload['event'])
+             room_name = get_channel_by_id(req.payload['event'].get('channel'))
              socketio.emit('newmessage', {'text': payload}, namespace='/watch', room=room_name['name'])
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
 
-socketio = SocketIO(app, async_mode=None, logger=True, engineio_logger=True)
-
-thread = Thread()
-thread_stop_event = Event()
+socketio = SocketIO(app, async_mode='gevent', logger=True, engineio_logger=True, cors_allowed_origins="*")
+thread = None
 
 def watch_slack():
     socketClient.socket_mode_request_listeners.append(process)
@@ -362,6 +391,11 @@ def watch_slack():
 
 @app.route('/')
 def index():
+    global thread
+    if thread is None:
+        thread = Thread(target=watch_slack)
+        thread.daemon = True
+        thread.start()
     if 'channel_default' in config:
         return redirect('/slackview/' + config['channel_default'], 307)
     else:
@@ -373,21 +407,21 @@ def watch(channel_name):
     global channel
     global channel_history
     channel = get_channel_by_name(channel_name)
-    channel_history = get_channel_history(channel['id'],config['history_limit'])
+    try:
+        channel_history = get_channel_history(channel['id'],config['history_limit'])
+    except Exception:
+        return redirect('/', 307)
     return render_template('slackview.html',
+                           web_address=config['web_address'],
                            theme=config['theme'])
 
 @socketio.on('join', namespace='/watch')
 def watch_connect(data):
-    global thread
     global room
     global room_id
     room = data['channel']
     join_room(room)
     logger.info("Client connected to %s" % room)
-
-    if not thread.is_alive():
-        thread = socketio.start_background_task(watch_slack)
 
     for message in channel_history:
         render_message(message);
@@ -399,7 +433,11 @@ def watch_disconnect(data):
     logger.info('Client disconnected')
 
 if __name__ == '__main__':
-    logger.info("Slack View is ready.")
+    logger.info("Slack View is running on %s" % (config['web_address']))
     all_emojis = get_all_emojis()
     user_list = get_all_users()
-    socketio.run(app, host='0.0.0.0', port=7000)
+    if in_config('keyfile'):
+        socketio.run(app, host=config['host'], port=config['port'], certfile=config['certfile'], keyfile=config['keyfile'])
+    else:
+        socketio.run(app, host=config['host'], port=config['port'])
+    socketio.run(app, host=config['host'], port=config['port'])
