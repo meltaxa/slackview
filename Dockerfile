@@ -7,6 +7,6 @@ RUN pip3 install --upgrade pip wheel && pip3 install --upgrade -r requirements.t
 
 ENV PYTHONPATH="/config:$PYTHONPATH"
 
-EXPOSE 7000
+EXPOSE 5000
 
 ENTRYPOINT [ "python3", "app.py" ]
