@@ -6,7 +6,7 @@ Slack View is a web app that can show mutliple Slack channels as separate Slack 
 
 # Demo
 
-This is a live Slack View example of the Bad Actors Slack channel from https://mellican.com/badactors:
+This is a live Slack View example of the Bad Actors Slack channel from https://slackview.mellican.com:
 
 <p align="center"> 
 <img src="https://mellican.com/images/badactors.png?github=slackview" width=70%><br>

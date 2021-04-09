@@ -128,7 +128,7 @@ def preflight_check():
       config['history_limit'] = 25
 
   if not in_config('theme'):
-      config['theme'] = 'styles'
+      config['theme'] = 'style'
   config['theme'] = config['theme'].replace("\.css$",'')
 
   if not in_config('host'):
